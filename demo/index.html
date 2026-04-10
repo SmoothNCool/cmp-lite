@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMP Lite — Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    .controls button, .controls a {
+      padding: .5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: .9rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    .controls button:hover, .controls a:hover { background: #e0e0e0; }
+    #consent-state {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: .85rem;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      font-size: .85rem;
+      color: #666;
+    }
+    footer a { color: #666; margin-right: 1rem; }
+  </style>
+</head>
+<body>
+
+  <h1>CMP Lite — Demo</h1>
+  <p>Cookie consent banner s Google Consent Mode V2.</p>
+
+  <div class="controls">
+    <button onclick="CMP.open()">CMP.open()</button>
+    <button onclick="CMP.reset()">CMP.reset()</button>
+    <button id="refresh-btn">Refresh state</button>
+    <a href="#" data-cmp-open>Nastaven&iacute; cookies (data attr)</a>
+  </div>
+
+  <h2>Aktu&aacute;ln&iacute; stav</h2>
+  <pre id="consent-state"></pre>
+
+  <footer>
+    <a href="#" data-cmp-open>Nastaven&iacute; cookies</a>
+    <a href="#privacy">Z&aacute;sady ochrany osobn&iacute;ch &uacute;daj&udblac;</a>
+  </footer>
+
+  <script>
+  window.cmpConfig = {
+    privacyPolicyUrl: '#privacy',
+    analytics: { trackConsent: true },
+  };
+  </script>
+  <script src="../dist/cmp.min.js"></script>
+  <script>
+  function updateState() {
+    document.getElementById('consent-state').textContent = JSON.stringify({
+      hasConsent: CMP.hasConsent(),
+      consent: CMP.getConsent(),
+      dataLayer: window.dataLayer,
+    }, null, 2);
+  }
+
+  updateState();
+
+  document.getElementById('refresh-btn').addEventListener('click', updateState);
+
+  CMP.on('consent_update', function () {
+    setTimeout(updateState, 100);
+  });
+  </script>
+
+</body>
+</html>
