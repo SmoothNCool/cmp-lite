@@ -3,7 +3,7 @@
  * Builds all DOM using createElement + textContent (never innerHTML).
  */
 
-import cssText from './styles.css?raw';
+import cssText from './styles.css';
 
 /** Inject <style data-cmp> once, applying config theme as custom properties. */
 function injectStyles(config) {

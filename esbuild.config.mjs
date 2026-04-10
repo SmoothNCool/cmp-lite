@@ -10,7 +10,6 @@ const config = {
   sourcemap: true,
   outfile: 'dist/cmp.min.js',
   format: 'iife',
-  globalName: 'CMP',
   target: ['es2020'],
   loader: { '.css': 'text', '.json': 'json' },
 };
