@@ -21,6 +21,7 @@ if (isWatch) {
   console.log('Watching...');
 } else {
   await build(config);
-  const { size } = readFileSync('dist/cmp.min.js');
+  const buf = readFileSync('dist/cmp.min.js');
+  const size = buf.length;
   console.log(`Build complete: ${(size / 1024).toFixed(1)} kB (${(size / 1024).toFixed(1)} kB raw)`);
 }
