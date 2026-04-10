@@ -1,0 +1,31 @@
+{
+  "banner": {
+    "title": "Nastavení cookies",
+    "description": "Tento web používá cookies pro zajištění správného fungování, analýzu návštěvnosti a marketingové účely. Vyberte, které cookies chcete povolit."
+  },
+  "buttons": {
+    "acceptAll": "Přijmout vše",
+    "rejectAll": "Odmítnout vše",
+    "settings": "Nastavení",
+    "saveSettings": "Uložit nastavení"
+  },
+  "categories": {
+    "necessary": {
+      "title": "Nezbytné",
+      "description": "Tyto cookies jsou nutné pro správné fungování webu. Nelze je vypnout."
+    },
+    "analytics": {
+      "title": "Analytické",
+      "description": "Pomáhají nám porozumět, jak web používáte, abychom jej mohli zlepšovat."
+    },
+    "marketing": {
+      "title": "Marketingové",
+      "description": "Používají se pro zobrazování relevantních reklam a měření jejich účinnosti."
+    }
+  },
+  "modal": {
+    "title": "Nastavení cookies",
+    "alwaysActive": "Vždy aktivní"
+  },
+  "privacyPolicy": "Zásady ochrany osobních údajů"
+}

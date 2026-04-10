@@ -1,0 +1,31 @@
+{
+  "banner": {
+    "title": "Cookie Settings",
+    "description": "This website uses cookies for proper functionality, traffic analysis, and marketing purposes. Choose which cookies you want to allow."
+  },
+  "buttons": {
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "settings": "Settings",
+    "saveSettings": "Save Settings"
+  },
+  "categories": {
+    "necessary": {
+      "title": "Necessary",
+      "description": "These cookies are required for the website to function properly. They cannot be disabled."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Help us understand how you use the website so we can improve it."
+    },
+    "marketing": {
+      "title": "Marketing",
+      "description": "Used to display relevant ads and measure their effectiveness."
+    }
+  },
+  "modal": {
+    "title": "Cookie Settings",
+    "alwaysActive": "Always Active"
+  },
+  "privacyPolicy": "Privacy Policy"
+}
