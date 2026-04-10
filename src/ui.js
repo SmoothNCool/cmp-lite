@@ -155,7 +155,8 @@ function buildModal(config, t, callbacks) {
     label.className = 'cmp-toggle';
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.checked = cat.default === 'granted';
+    const currentConsent = callbacks.getCurrentConsent ? callbacks.getCurrentConsent() : null;
+    checkbox.checked = currentConsent ? (currentConsent[key] ?? false) : (cat.default === 'granted');
     toggles[key] = checkbox;
     label.appendChild(checkbox);
     const slider = document.createElement('span');

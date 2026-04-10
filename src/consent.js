@@ -1,6 +1,6 @@
 function gtag() {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(...arguments);
+  window.dataLayer.push(arguments);
 }
 
 function getCookie(name) {
@@ -10,6 +10,9 @@ function getCookie(name) {
 
 function setCookie(name, value, days, domain) {
   let cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=Lax`;
+  if (typeof location !== 'undefined' && location.protocol === 'https:') {
+    cookie += '; Secure';
+  }
   if (days) {
     const date = new Date();
     date.setTime(date.getTime() + days * 86400000);
@@ -93,8 +96,11 @@ export function createConsentManager(config) {
 
     getConsent() {
       if (!consentState) return null;
-      const { analytics, marketing, ts, v } = consentState;
-      return { analytics, marketing, ts, v };
+      const result = { ts: consentState.ts, v: consentState.v };
+      for (const catKey of Object.keys(config.categories)) {
+        result[catKey] = consentState[catKey] ?? false;
+      }
+      return result;
     },
 
     acceptAll() {

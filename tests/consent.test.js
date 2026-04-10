@@ -26,24 +26,22 @@ function makeConfig(overrides = {}) {
 }
 
 describe('createConsentManager', () => {
-  let pushSpy;
-
   beforeEach(() => {
     document.cookie = 'cmp_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     window.dataLayer = [];
-    pushSpy = vi.spyOn(window.dataLayer, 'push');
   });
 
   it('sends default consent on init when no cookie exists', () => {
     const cm = createConsentManager(makeConfig());
     cm.init();
-    expect(pushSpy).toHaveBeenCalledWith(
-      'consent', 'default', expect.objectContaining({
-        ad_storage: 'denied',
-        functionality_storage: 'granted',
-        wait_for_update: 500,
-      })
-    );
+    const entry = window.dataLayer[0];
+    expect(entry[0]).toBe('consent');
+    expect(entry[1]).toBe('default');
+    expect(entry[2]).toMatchObject({
+      ad_storage: 'denied',
+      functionality_storage: 'granted',
+      wait_for_update: 500,
+    });
   });
 
   it('sends update immediately if valid cookie exists', () => {
@@ -51,11 +49,10 @@ describe('createConsentManager', () => {
     document.cookie = `cmp_consent=${encodeURIComponent(data)}; path=/`;
     const cm = createConsentManager(makeConfig());
     cm.init();
-    const calls = pushSpy.mock.calls;
-    const updateCall = calls.find(c => c[0] === 'consent' && c[1] === 'update');
-    expect(updateCall).toBeTruthy();
-    expect(updateCall[2].analytics_storage).toBe('granted');
-    expect(updateCall[2].ad_storage).toBe('denied');
+    const updateEntry = Array.from(window.dataLayer).find(e => e[0] === 'consent' && e[1] === 'update');
+    expect(updateEntry).toBeTruthy();
+    expect(updateEntry[2].analytics_storage).toBe('granted');
+    expect(updateEntry[2].ad_storage).toBe('denied');
   });
 
   it('returns needsBanner=true when no cookie', () => {

@@ -5,6 +5,14 @@ import { createUI } from './ui.js';
 import { bindDataAttributes } from './events.js';
 import { trackConsentEvent } from './analytics.js';
 
+// Simple event emitter for open/close events
+const mainListeners = {};
+function emitMain(event, data) {
+  if (mainListeners[event]) {
+    mainListeners[event].forEach(cb => cb(data));
+  }
+}
+
 // Resolve config
 const config = resolveConfig();
 const lang = detectLanguage(config.lang);
@@ -41,6 +49,9 @@ function showBanner() {
     getCategories() {
       return config.categories;
     },
+    getCurrentConsent() {
+      return consent.getConsent();
+    },
   });
   ui.showBanner();
 }
@@ -68,12 +79,19 @@ bindDataAttributes({
 
 // Expose public API
 window.CMP = {
-  open() { showBanner(); if (ui) ui.showModal(); },
-  close() { if (ui) { ui.destroy(); ui = null; } },
+  open() { showBanner(); if (ui) ui.showModal(); emitMain('open'); },
+  close() { if (ui) { ui.destroy(); ui = null; } emitMain('close'); },
   acceptAll() { consent.acceptAll(); if (ui) { ui.destroy(); ui = null; } },
   rejectAll() { consent.rejectAll(); if (ui) { ui.destroy(); ui = null; } },
   getConsent() { return consent.getConsent(); },
   hasConsent() { return consent.hasConsent(); },
   reset() { consent.reset(); showBanner(); },
-  on(event, cb) { consent.on(event, cb); },
+  on(event, cb) {
+    if (event === 'open' || event === 'close') {
+      if (!mainListeners[event]) mainListeners[event] = [];
+      mainListeners[event].push(cb);
+    } else {
+      consent.on(event, cb);
+    }
+  },
 };
