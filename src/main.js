@@ -61,11 +61,43 @@ if (consent.needsBanner()) {
   showBanner();
 }
 
+// Open settings modal (reuses existing UI or creates fresh one)
+function openSettings() {
+  if (!ui) {
+    ui = createUI(config, t, {
+      onAcceptAll() {
+        consent.acceptAll();
+        trackConsentEvent(config, consent.getConsent(), 'accept_all');
+        if (ui) { ui.destroy(); ui = null; }
+      },
+      onRejectAll() {
+        consent.rejectAll();
+        trackConsentEvent(config, consent.getConsent(), 'reject_all');
+        if (ui) { ui.destroy(); ui = null; }
+      },
+      onSaveSettings(categories) {
+        consent.updateConsent(categories);
+        trackConsentEvent(config, consent.getConsent(), 'custom');
+        if (ui) { ui.destroy(); ui = null; }
+      },
+      onOpenSettings() {
+        if (ui) ui.showModal();
+      },
+      getCategories() {
+        return config.categories;
+      },
+      getCurrentConsent() {
+        return consent.getConsent();
+      },
+    });
+  }
+  ui.showModal();
+}
+
 // Bind data attributes
 bindDataAttributes({
   open() {
-    showBanner();
-    if (ui) ui.showModal();
+    openSettings();
   },
   acceptAll() {
     consent.acceptAll();
@@ -79,7 +111,7 @@ bindDataAttributes({
 
 // Expose public API
 window.CMP = {
-  open() { showBanner(); if (ui) ui.showModal(); emitMain('open'); },
+  open() { openSettings(); emitMain('open'); },
   close() { if (ui) { ui.destroy(); ui = null; } emitMain('close'); },
   acceptAll() { consent.acceptAll(); if (ui) { ui.destroy(); ui = null; } },
   rejectAll() { consent.rejectAll(); if (ui) { ui.destroy(); ui = null; } },

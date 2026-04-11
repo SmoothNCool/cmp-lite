@@ -184,24 +184,24 @@
     <div class="config-section">
       <h3>Barvy</h3>
       <div class="config-row">
-        <label>Primary</label>
+        <label>Primary (pozadí / text)</label>
         <div class="color-pair">
-          <input type="color" id="cfg-primary" value="#2563eb">
-          <input type="color" id="cfg-primary-text" value="#ffffff" title="Text">
+          <input type="color" id="cfg-primary" value="#2563eb" title="Pozadí tlačítka">
+          <input type="color" id="cfg-primary-text" value="#ffffff" title="Text tlačítka">
         </div>
       </div>
       <div class="config-row">
-        <label>Secondary</label>
+        <label>Secondary (pozadí / text)</label>
         <div class="color-pair">
-          <input type="color" id="cfg-secondary" value="#e5e7eb">
-          <input type="color" id="cfg-secondary-text" value="#1f2937" title="Text">
+          <input type="color" id="cfg-secondary" value="#e5e7eb" title="Pozadí tlačítka">
+          <input type="color" id="cfg-secondary-text" value="#1f2937" title="Text tlačítka">
         </div>
       </div>
       <div class="config-row">
-        <label>Pozadí / Text</label>
+        <label>Banner (pozadí / text)</label>
         <div class="color-pair">
-          <input type="color" id="cfg-bg" value="#ffffff">
-          <input type="color" id="cfg-text" value="#374151" title="Text">
+          <input type="color" id="cfg-bg" value="#ffffff" title="Pozadí banneru">
+          <input type="color" id="cfg-text" value="#374151" title="Text banneru">
         </div>
       </div>
       <div class="config-row">
@@ -212,14 +212,6 @@
 
     <div class="config-section">
       <h3>Pokročilé</h3>
-      <div class="config-row">
-        <label for="cfg-version">Banner verze</label>
-        <input type="text" id="cfg-version" value="1.0">
-      </div>
-      <div class="config-row">
-        <label for="cfg-cookie">Cookie název</label>
-        <input type="text" id="cfg-cookie" value="cmp_consent">
-      </div>
       <div class="config-row">
         <label for="cfg-analytics-default">Analytics default</label>
         <select id="cfg-analytics-default">
@@ -313,8 +305,6 @@
       },
       lang: lang,
       consentExpiry: expiry,
-      bannerVersion: document.getElementById('cfg-version').value || '1.0',
-      cookieName: document.getElementById('cfg-cookie').value || 'cmp_consent',
       buttons: {
         acceptAll: { show: true, style: acceptStyle },
         rejectAll: {
@@ -369,8 +359,7 @@
     document.querySelectorAll('style[data-cmp]').forEach(function(el) { el.remove(); });
 
     // Clear consent cookie
-    var cookieName = document.getElementById('cfg-cookie').value || 'cmp_consent';
-    document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    document.cookie = 'cmp_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
 
     // Build new config
     var cfg = buildConfig();

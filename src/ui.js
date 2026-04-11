@@ -295,6 +295,11 @@ export function createUI(config, t, callbacks) {
   function showModal() {
     removeOverlay();
     overlayEl = buildModal(config, t, callbacks);
+    // Apply overlay config
+    overlayEl.style.background = config.display.overlayColor || 'rgba(0, 0, 0, 0.5)';
+    if (config.display.overlayBlur) {
+      overlayEl.classList.add('cmp-overlay--blur');
+    }
     document.body.appendChild(overlayEl);
   }
 
