@@ -38,6 +38,12 @@
   animation: cmp-fade-in 0.2s ease-out;
 }
 
+.cmp-overlay--wall {
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
 /* ── Banner ── */
 .cmp-banner {
   position: fixed;
@@ -105,22 +111,13 @@
   align-items: center;
 }
 
-/* ── Wall Mode ── */
-.cmp-wall {
-  position: fixed;
-  inset: 0;
-  z-index: var(--cmp-z);
-  background: var(--cmp-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: cmp-fade-in 0.2s ease-out;
+/* ── Modal as banner card (modal/wall modes) ── */
+.cmp-modal--banner {
+  text-align: left;
 }
 
-.cmp-wall__inner {
-  max-width: 540px;
-  padding: 40px 24px;
-  text-align: center;
+.cmp-modal--banner .cmp-banner__actions {
+  margin-top: 8px;
 }
 
 /* ── Modal ── */
@@ -328,8 +325,7 @@
 @media (prefers-reduced-motion: reduce) {
   .cmp-banner,
   .cmp-overlay,
-  .cmp-modal,
-  .cmp-wall {
+  .cmp-modal {
     animation: none;
   }
 

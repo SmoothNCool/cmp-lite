@@ -260,22 +260,23 @@ export function createUI(config, t, callbacks) {
     const mode = config.display.mode;
     const position = config.display.position;
 
-    if (mode === 'modal') {
-      // Show modal directly
-      overlayEl = buildModal(config, t, callbacks);
+    if (mode === 'modal' || mode === 'wall') {
+      // Both modal and wall show overlay + centered card with banner content
+      const overlay = document.createElement('div');
+      overlay.className = mode === 'wall' ? 'cmp-overlay cmp-overlay--wall' : 'cmp-overlay';
+      const card = document.createElement('div');
+      card.className = 'cmp-modal cmp-modal--banner';
+      card.setAttribute('role', 'dialog');
+      card.setAttribute('aria-modal', 'true');
+      card.setAttribute('aria-label', t.banner.title);
+      const content = document.createElement('div');
+      content.className = 'cmp-banner__content';
+      content.appendChild(buildBannerContent(config, t, callbacks));
+      card.appendChild(content);
+      overlay.appendChild(card);
+      setupFocusTrap(overlay, card);
+      overlayEl = overlay;
       document.body.appendChild(overlayEl);
-      return;
-    }
-
-    if (mode === 'wall') {
-      const wall = document.createElement('div');
-      wall.className = 'cmp-wall';
-      const inner = document.createElement('div');
-      inner.className = 'cmp-wall__inner cmp-banner__content';
-      inner.appendChild(buildBannerContent(config, t, callbacks));
-      wall.appendChild(inner);
-      bannerEl = wall;
-      document.body.appendChild(bannerEl);
       return;
     }
 
