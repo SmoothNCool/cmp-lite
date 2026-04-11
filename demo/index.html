@@ -8,13 +8,15 @@
     * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 2rem 1rem;
       line-height: 1.6;
       color: #1a1a1a;
     }
-    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    h1 { margin-bottom: 0.25rem; }
+    h2 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0; }
     .controls button, .controls a {
       padding: .5rem 1rem;
       border: 1px solid #ccc;
@@ -26,14 +28,64 @@
       color: inherit;
     }
     .controls button:hover, .controls a:hover { background: #e0e0e0; }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    @media (max-width: 640px) { .config-grid { grid-template-columns: 1fr; } }
+
+    .config-section {
+      background: #f8f8f8;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .config-section h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .config-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    .config-row label { flex: 1; }
+    .config-row select, .config-row input[type="text"], .config-row input[type="number"] {
+      width: 160px;
+      padding: 4px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .config-row input[type="color"] {
+      width: 40px; height: 30px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;
+    }
+    .color-pair { display: flex; gap: 4px; align-items: center; }
+
     #consent-state {
       background: #f8f8f8;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 1rem;
       overflow-x: auto;
-      font-size: .85rem;
+      font-size: .8rem;
+      max-height: 300px;
     }
+
+    .apply-btn {
+      background: #2563eb !important;
+      color: #fff !important;
+      border-color: #2563eb !important;
+      font-weight: 600;
+    }
+    .apply-btn:hover { opacity: 0.9; }
+
     footer {
       margin-top: 3rem;
       padding-top: 1rem;
@@ -47,23 +99,151 @@
 <body>
 
   <h1>CMP Lite — Demo</h1>
-  <p>Cookie consent banner s Google Consent Mode V2.</p>
+  <p>Cookie consent banner s Google Consent Mode V2. Konfiguruj a testuj.</p>
 
-  <div class="controls">
-    <button onclick="CMP.open()">CMP.open()</button>
-    <button onclick="CMP.reset()">CMP.reset()</button>
-    <button id="refresh-btn">Refresh state</button>
-    <a href="#" data-cmp-open>Nastaven&iacute; cookies (data attr)</a>
+  <h2>Konfigurace</h2>
+
+  <div class="config-grid">
+
+    <div class="config-section">
+      <h3>Zobrazení</h3>
+      <div class="config-row">
+        <label for="cfg-mode">Režim</label>
+        <select id="cfg-mode">
+          <option value="banner" selected>banner</option>
+          <option value="modal">modal</option>
+          <option value="wall">wall</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-position">Pozice</label>
+        <select id="cfg-position">
+          <option value="bottom" selected>bottom</option>
+          <option value="top">top</option>
+          <option value="bottom-left">bottom-left</option>
+          <option value="bottom-right">bottom-right</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-lang">Jazyk</label>
+        <select id="cfg-lang">
+          <option value="auto" selected>auto</option>
+          <option value="cs">cs</option>
+          <option value="en">en</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-expiry">Expirace (dny)</label>
+        <input type="number" id="cfg-expiry" value="365" min="1" max="730">
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Tlačítka</h3>
+      <div class="config-row">
+        <label for="cfg-accept-style">Přijmout vše</label>
+        <select id="cfg-accept-style">
+          <option value="primary" selected>primary</option>
+          <option value="secondary">secondary</option>
+          <option value="link">link</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-reject-show">Odmítnout vše</label>
+        <select id="cfg-reject-show">
+          <option value="secondary" selected>secondary (viditelný)</option>
+          <option value="link">link (nevýrazný)</option>
+          <option value="hidden">skrytý</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-settings-style">Nastavení</label>
+        <select id="cfg-settings-style">
+          <option value="link" selected>link</option>
+          <option value="secondary">secondary</option>
+          <option value="primary">primary</option>
+          <option value="hidden">skrytý</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Barvy</h3>
+      <div class="config-row">
+        <label>Primary</label>
+        <div class="color-pair">
+          <input type="color" id="cfg-primary" value="#2563eb">
+          <input type="color" id="cfg-primary-text" value="#ffffff" title="Text">
+        </div>
+      </div>
+      <div class="config-row">
+        <label>Secondary</label>
+        <div class="color-pair">
+          <input type="color" id="cfg-secondary" value="#e5e7eb">
+          <input type="color" id="cfg-secondary-text" value="#1f2937" title="Text">
+        </div>
+      </div>
+      <div class="config-row">
+        <label>Pozadí / Text</label>
+        <div class="color-pair">
+          <input type="color" id="cfg-bg" value="#ffffff">
+          <input type="color" id="cfg-text" value="#374151" title="Text">
+        </div>
+      </div>
+      <div class="config-row">
+        <label for="cfg-radius">Border radius</label>
+        <input type="text" id="cfg-radius" value="8px">
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Pokročilé</h3>
+      <div class="config-row">
+        <label for="cfg-version">Banner verze</label>
+        <input type="text" id="cfg-version" value="1.0">
+      </div>
+      <div class="config-row">
+        <label for="cfg-cookie">Cookie název</label>
+        <input type="text" id="cfg-cookie" value="cmp_consent">
+      </div>
+      <div class="config-row">
+        <label for="cfg-analytics-default">Analytics default</label>
+        <select id="cfg-analytics-default">
+          <option value="denied" selected>denied</option>
+          <option value="granted">granted</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-marketing-default">Marketing default</label>
+        <select id="cfg-marketing-default">
+          <option value="denied" selected>denied</option>
+          <option value="granted">granted</option>
+        </select>
+      </div>
+    </div>
+
   </div>
 
-  <h2>Aktu&aacute;ln&iacute; stav</h2>
+  <div class="controls">
+    <button class="apply-btn" id="apply-btn">Aplikovat a zobrazit banner</button>
+    <button id="reset-btn">CMP.reset()</button>
+    <button id="open-btn">CMP.open()</button>
+    <button id="refresh-btn">Refresh state</button>
+    <a href="#" data-cmp-open>Nastavení cookies (data attr)</a>
+  </div>
+
+  <h2>Aktuální stav</h2>
   <pre id="consent-state"></pre>
 
+  <h2>Vygenerovaný config</h2>
+  <pre id="config-output"></pre>
+
   <footer>
-    <a href="#" data-cmp-open>Nastaven&iacute; cookies</a>
-    <a href="#privacy">Z&aacute;sady ochrany osobn&iacute;ch &uacute;daj&udblac;</a>
+    <a href="#" data-cmp-open>Nastavení cookies</a>
+    <a href="#privacy">Zásady ochrany osobních údajů</a>
   </footer>
 
+  <!-- CMP Lite default config -->
   <script>
   window.cmpConfig = {
     privacyPolicyUrl: '#privacy',
@@ -71,20 +251,129 @@
   };
   </script>
   <script src="../dist/cmp.min.js"></script>
+
   <script>
   function updateState() {
-    document.getElementById('consent-state').textContent = JSON.stringify({
+    var state = {
       hasConsent: CMP.hasConsent(),
       consent: CMP.getConsent(),
-      dataLayer: window.dataLayer,
-    }, null, 2);
+    };
+    document.getElementById('consent-state').textContent = JSON.stringify(state, null, 2);
   }
 
-  updateState();
+  function buildConfig() {
+    var mode = document.getElementById('cfg-mode').value;
+    var position = document.getElementById('cfg-position').value;
+    var lang = document.getElementById('cfg-lang').value;
+    var expiry = parseInt(document.getElementById('cfg-expiry').value, 10) || 365;
 
+    var acceptStyle = document.getElementById('cfg-accept-style').value;
+    var rejectVal = document.getElementById('cfg-reject-show').value;
+    var settingsVal = document.getElementById('cfg-settings-style').value;
+
+    var cfg = {
+      privacyPolicyUrl: '#privacy',
+      display: { mode: mode, position: position },
+      lang: lang,
+      consentExpiry: expiry,
+      bannerVersion: document.getElementById('cfg-version').value || '1.0',
+      cookieName: document.getElementById('cfg-cookie').value || 'cmp_consent',
+      buttons: {
+        acceptAll: { show: true, style: acceptStyle },
+        rejectAll: {
+          show: rejectVal !== 'hidden',
+          style: rejectVal === 'hidden' ? 'secondary' : rejectVal
+        },
+        settings: {
+          show: settingsVal !== 'hidden',
+          style: settingsVal === 'hidden' ? 'link' : settingsVal
+        }
+      },
+      style: {
+        primaryColor: document.getElementById('cfg-primary').value,
+        primaryTextColor: document.getElementById('cfg-primary-text').value,
+        secondaryColor: document.getElementById('cfg-secondary').value,
+        secondaryTextColor: document.getElementById('cfg-secondary-text').value,
+        backgroundColor: document.getElementById('cfg-bg').value,
+        textColor: document.getElementById('cfg-text').value,
+        borderRadius: document.getElementById('cfg-radius').value || '8px',
+        fontFamily: 'inherit',
+        zIndex: 99999
+      },
+      defaults: {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: document.getElementById('cfg-analytics-default').value,
+        functionality_storage: 'granted',
+        personalization_storage: 'denied',
+        security_storage: 'granted'
+      },
+      analytics: { trackConsent: true }
+    };
+
+    return cfg;
+  }
+
+  function showConfigOutput(cfg) {
+    var clean = JSON.parse(JSON.stringify(cfg));
+    document.getElementById('config-output').textContent =
+      'window.cmpConfig = ' + JSON.stringify(clean, null, 2) + ';';
+  }
+
+  function applyConfig() {
+    // Close existing CMP
+    if (window.CMP) {
+      CMP.close();
+    }
+
+    // Remove old CMP elements and styles
+    document.querySelectorAll('[class^="cmp-"], [class*=" cmp-"]').forEach(function(el) { el.remove(); });
+    document.querySelectorAll('style[data-cmp]').forEach(function(el) { el.remove(); });
+
+    // Clear consent cookie
+    var cookieName = document.getElementById('cfg-cookie').value || 'cmp_consent';
+    document.cookie = cookieName + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+
+    // Build new config
+    var cfg = buildConfig();
+    showConfigOutput(cfg);
+
+    // Set new config and reload CMP script
+    window.cmpConfig = cfg;
+
+    // Remove old script
+    var oldScript = document.querySelector('script[src*="cmp.min.js"]');
+    if (oldScript) oldScript.remove();
+
+    // Load fresh CMP
+    var script = document.createElement('script');
+    script.src = '../dist/cmp.min.js?t=' + Date.now();
+    script.onload = function() {
+      updateState();
+      CMP.on('consent_update', function() {
+        setTimeout(updateState, 100);
+      });
+    };
+    document.body.appendChild(script);
+  }
+
+  // Button bindings
+  document.getElementById('apply-btn').addEventListener('click', applyConfig);
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    if (window.CMP) CMP.reset();
+    setTimeout(updateState, 100);
+  });
+  document.getElementById('open-btn').addEventListener('click', function() {
+    if (window.CMP) CMP.open();
+  });
   document.getElementById('refresh-btn').addEventListener('click', updateState);
 
-  CMP.on('consent_update', function () {
+  // Initial state
+  updateState();
+  showConfigOutput(buildConfig());
+
+  CMP.on('consent_update', function() {
     setTimeout(updateState, 100);
   });
   </script>
