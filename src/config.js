@@ -19,8 +19,10 @@ export const DEFAULT_CONFIG = {
     },
   },
   display: {
-    mode: 'banner',
-    position: 'bottom',
+    mode: 'banner',       // 'banner' | 'modal'
+    position: 'bottom',   // 'bottom' | 'top' | 'bottom-left' | 'bottom-right'
+    overlayColor: 'rgba(0, 0, 0, 0.5)',
+    overlayBlur: false,
   },
   buttons: {
     acceptAll: { show: true, style: 'primary' },

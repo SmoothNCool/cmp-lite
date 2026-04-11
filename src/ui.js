@@ -260,10 +260,11 @@ export function createUI(config, t, callbacks) {
     const mode = config.display.mode;
     const position = config.display.position;
 
-    if (mode === 'modal' || mode === 'wall') {
-      // Both modal and wall show overlay + centered card with banner content
+    if (mode === 'modal') {
+      // Overlay + centered card with banner content
       const overlay = document.createElement('div');
-      overlay.className = mode === 'wall' ? 'cmp-overlay cmp-overlay--wall' : 'cmp-overlay';
+      overlay.className = config.display.overlayBlur ? 'cmp-overlay cmp-overlay--blur' : 'cmp-overlay';
+      overlay.style.background = config.display.overlayColor || 'rgba(0, 0, 0, 0.5)';
       const card = document.createElement('div');
       card.className = 'cmp-modal cmp-modal--banner';
       card.setAttribute('role', 'dialog');

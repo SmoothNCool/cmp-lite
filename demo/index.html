@@ -110,18 +110,28 @@
       <div class="config-row">
         <label for="cfg-mode">Režim</label>
         <select id="cfg-mode">
-          <option value="banner" selected>banner</option>
-          <option value="modal">modal</option>
-          <option value="wall">wall</option>
+          <option value="banner" selected>banner (lišta)</option>
+          <option value="modal">modal (dialog)</option>
         </select>
       </div>
       <div class="config-row">
-        <label for="cfg-position">Pozice</label>
+        <label for="cfg-position">Pozice (banner)</label>
         <select id="cfg-position">
           <option value="bottom" selected>bottom</option>
           <option value="top">top</option>
           <option value="bottom-left">bottom-left</option>
           <option value="bottom-right">bottom-right</option>
+        </select>
+      </div>
+      <div class="config-row">
+        <label for="cfg-overlay">Overlay barva</label>
+        <input type="text" id="cfg-overlay" value="rgba(0, 0, 0, 0.5)">
+      </div>
+      <div class="config-row">
+        <label for="cfg-blur">Backdrop blur</label>
+        <select id="cfg-blur">
+          <option value="false" selected>ne</option>
+          <option value="true">ano</option>
         </select>
       </div>
       <div class="config-row">
@@ -273,7 +283,12 @@
 
     var cfg = {
       privacyPolicyUrl: '#privacy',
-      display: { mode: mode, position: position },
+      display: {
+        mode: mode,
+        position: position,
+        overlayColor: document.getElementById('cfg-overlay').value || 'rgba(0, 0, 0, 0.5)',
+        overlayBlur: document.getElementById('cfg-blur').value === 'true'
+      },
       lang: lang,
       consentExpiry: expiry,
       bannerVersion: document.getElementById('cfg-version').value || '1.0',
