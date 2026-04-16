@@ -7,14 +7,14 @@ Lightweight Cookie Management Platform with Google Consent Mode V2 support. Depl
 - Google Consent Mode V2 (all 7 signals)
 - Single GTM tag deployment
 - Configurable: display modes, buttons, colors, translations
-- < 15 kB gzipped
+- < 6 kB gzipped
 - CZ + EN with auto-detection
 - No dependencies
 - GDPR compliant
 
 ## Quick Start
 
-Add a single Custom HTML tag in GTM with trigger **Consent Initialization - All Pages**:
+Add a single **Custom HTML** tag in GTM with trigger **Consent Initialization - All Pages**:
 
 ```html
 <script>
@@ -22,10 +22,39 @@ window.cmpConfig = {
   privacyPolicyUrl: '/privacy-policy'
 };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/davidzelenka/cmp-lite@v1/dist/cmp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.1.0/dist/cmp.min.js"></script>
 ```
 
 That's it. Default config works out of the box.
+
+## GTM Installation (Step-by-step)
+
+1. Open [Google Tag Manager](https://tagmanager.google.com/) and select your container
+2. Go to **Tags → New**
+3. Name the tag (e.g. `CMP Lite - Consent Banner`)
+4. Tag type: **Custom HTML**
+5. Paste the Quick Start snippet above (update `privacyPolicyUrl` to your actual URL)
+6. Triggering: click **Consent Initialization - All Pages**
+   - If this trigger doesn't exist: go to **Triggers → New → Consent Initialization → All Pages**
+7. Save and **Preview** to test
+8. Once verified, **Submit** the container
+
+### Verifying Consent Mode
+
+After deployment, verify in browser DevTools console:
+
+```js
+// Check current consent state
+CMP.getConsent()
+
+// Check if dataLayer has consent_default and consent_update
+dataLayer.filter(e => e[0] === 'consent')
+```
+
+In GTM Preview mode, you should see:
+- `Consent Initialization` event fires first
+- Default consent state is set (`denied` for analytics/marketing)
+- After user interaction, `consent_update` fires with the new state
 
 ## Configuration
 
