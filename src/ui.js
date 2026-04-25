@@ -74,19 +74,19 @@ function buildBannerContent(config, t, callbacks) {
 
   if (buttons.acceptAll.show) {
     actions.appendChild(
-      makeButton(t.buttons.acceptAll, btnClass(buttons.acceptAll.style) + ' cmp-btn-accept', callbacks.onAcceptAll),
+      makeButton(buttons.acceptAll.text || t.buttons.acceptAll, btnClass(buttons.acceptAll.style) + ' cmp-btn-accept', callbacks.onAcceptAll),
     );
   }
 
   if (buttons.rejectAll.show) {
     actions.appendChild(
-      makeButton(t.buttons.rejectAll, btnClass(buttons.rejectAll.style) + ' cmp-btn-reject', callbacks.onRejectAll),
+      makeButton(buttons.rejectAll.text || t.buttons.rejectAll, btnClass(buttons.rejectAll.style) + ' cmp-btn-reject', callbacks.onRejectAll),
     );
   }
 
   if (buttons.settings.show) {
     actions.appendChild(
-      makeButton(t.buttons.settings, btnClass(buttons.settings.style) + ' cmp-btn-settings', callbacks.onOpenSettings),
+      makeButton(buttons.settings.text || t.buttons.settings, btnClass(buttons.settings.style) + ' cmp-btn-settings', callbacks.onOpenSettings),
     );
   }
 
@@ -189,7 +189,7 @@ function buildModal(config, t, callbacks) {
   );
 
   actions.appendChild(
-    makeButton(t.buttons.acceptAll, 'cmp-btn--primary cmp-btn-accept', callbacks.onAcceptAll),
+    makeButton(config.buttons.acceptAll.text || t.buttons.acceptAll, 'cmp-btn--primary cmp-btn-accept', callbacks.onAcceptAll),
   );
 
   modal.appendChild(actions);
