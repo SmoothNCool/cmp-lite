@@ -132,8 +132,6 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--cmp-secondary);
 }
 
 /* ── Buttons ── */
@@ -203,12 +201,7 @@
 
 /* ── Category ── */
 .cmp-category {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--cmp-secondary);
-}
-
-.cmp-category:last-child {
-  border-bottom: none;
+  padding: 12px 0;
 }
 
 .cmp-category__header {
