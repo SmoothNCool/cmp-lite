@@ -55,7 +55,7 @@
 .cmp-banner--bottom-right {
   left: auto;
   right: auto;
-  max-width: 420px;
+  max-width: 520px;
   margin: 16px;
   border-radius: var(--cmp-radius);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);

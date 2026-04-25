@@ -32,7 +32,7 @@ export const DEFAULT_CONFIG = {
   style: {
     primaryColor: '#000000',
     primaryTextColor: '#ffffff',
-    secondaryColor: '#f3f4f6',
+    secondaryColor: '#d1d5db',
     secondaryTextColor: '#000000',
     backgroundColor: '#ffffff',
     textColor: '#000000',
