@@ -57,6 +57,49 @@ In GTM Preview mode, you should see:
 - Default consent state is set (`denied` for analytics/marketing)
 - After user interaction, `consent_update` fires with the new state
 
+## Configuring other GTM tags
+
+CMP Lite calls the standard `gtag('consent', 'default'/'update', ...)` API, so any tag that respects Google Consent Mode V2 picks it up automatically. **How you configure each tag in GTM depends on whether the tag has built-in CMP V2 support.**
+
+### Tags WITH native Consent Mode V2 — fire on Page View, don't gate
+
+These tags read the consent state internally. When `denied`, they run in cookieless / limited mode (no identifying cookies, just modeling pings). When `granted`, they switch to full mode automatically.
+
+| Platform | GTM tag | Notes |
+|---|---|---|
+| GA4 | Google Tag / GA4 Configuration | reads `analytics_storage` |
+| Google Ads | Conversion / Remarketing | reads `ad_storage` + `ad_user_data` + `ad_personalization` |
+| Sklik (Seznam.cz) | Sklik Retargeting / Conversion (≥ 2024) | reads `ad_storage` |
+| Meta Pixel | Custom HTML or template (≥ late 2023) | reads `ad_storage` for Limited Data Use |
+
+**Setup:** trigger `Page View - All Pages` (or `Initialization - All Pages` for GA4 Config). Leave **Consent Settings → No additional consent required**. Do **not** check "Require additional consent for tag to fire" — gating these tags suppresses them entirely and breaks the cookieless modeling that platforms expect even from non-consenting users.
+
+### Tags WITHOUT native V2 support — gate manually
+
+These tags don't know about Consent Mode and will write cookies regardless. Block them until consent is granted.
+
+Examples: Hotjar, Smartlook, Microsoft Clarity, LinkedIn Insight Tag (older), TikTok Pixel, Pinterest Tag, custom HTML for affiliate networks, A/B testing tools.
+
+**Setup:** in tag → **Advanced Settings → Consent Settings** → **Require additional consent for tag to fire** → add the matching signal:
+
+| Tag purpose | Required signal |
+|---|---|
+| Analytics / heatmap / session replay | `analytics_storage` |
+| Marketing / retargeting / ads | `ad_storage` (often `ad_user_data` + `ad_personalization`) |
+| Personalization | `personalization_storage` |
+
+The tag stays inactive until the user clicks Accept (or enables that category in the customize modal). To also re-fire after a *late* consent (user accepts on a later interaction, not on first page view), add a **Custom Event** trigger:
+
+- Trigger type: `Custom Event`
+- Event name: `consent_update`
+- Fire on: condition matching the granted signal (e.g. via `dataLayer` variable that reads `consent_marketing == true`)
+
+CMP Lite emits `consent_update` to `dataLayer` automatically when you enable `window.cmpConfig.analytics.trackConsent = true`.
+
+### How to check what your tag supports
+
+GTM Admin → Container Settings → **Consent Configuration** lists every tag template with its built-in consent signals. If a tag shows signals there, treat it as "WITH native V2" above.
+
 ## Configuration
 
 Override only what differs from defaults. The full shape:
