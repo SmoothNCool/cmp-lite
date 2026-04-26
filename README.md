@@ -117,23 +117,9 @@ CMP Lite stores the user's choice in a cookie and emits events. Pick whichever a
 
 Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is the Unix-ms timestamp of the decision; `v` is `bannerVersion` (used to invalidate consent when you change categories — bump it and old cookies are ignored).
 
-**Three ways to access it in GTM:**
+**Three ways to access it in GTM** — pick by what your tag needs:
 
-1. **`consent_update` dataLayer event (recommended).** Set `window.cmpConfig.analytics.trackConsent = true` — CMP Lite then pushes:
-   ```js
-   { event: 'consent_update', consent_analytics: true, consent_marketing: false, consent_action: 'accept_all' }
-   ```
-   In GTM make a **Data Layer Variable** for `consent_analytics` / `consent_marketing` and a **Custom Event** trigger on `consent_update`. `consent_action` is one of `accept_all` / `reject_all` / `custom`.
-
-2. **Custom JavaScript variable** — read the parsed state directly via the public API:
-   ```js
-   function() {
-     return (window.CMP && window.CMP.getConsent()) || null;
-   }
-   ```
-   Returns `{ analytics, marketing, ts, v }` or `null` before the user decides. Useful in tag conditions.
-
-3. **1st-Party Cookie variable** — built-in GTM variable type, set Cookie Name to `cmp_consent`. Returns the raw URL-encoded JSON string, so wrap it in a Custom JS variable to parse:
+1. **1st-Party Cookie variable (default choice for tag conditions).** Built-in GTM variable type, set Cookie Name to `cmp_consent`. Returns the raw URL-encoded JSON string, so wrap it in a Custom JS variable to parse:
    ```js
    function() {
      var raw = {{cmp_consent cookie}};
@@ -141,8 +127,21 @@ Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is 
      try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { return null; }
    }
    ```
+   The cookie is present on **every** page view after the user decides, so this works for "fire tag X if user consented to marketing" on any page — including return visits where no consent action just happened.
 
-For most use cases option 1 (dataLayer event) is the cleanest — it fires reactively on every consent change and the values are pre-parsed.
+2. **Custom JavaScript variable** calling the public API:
+   ```js
+   function() {
+     return (window.CMP && window.CMP.getConsent()) || null;
+   }
+   ```
+   Equivalent to option 1 but reads from in-memory state set up by the CMP. Slightly more robust if the cookie was tampered with — CMP Lite validates and ignores invalid cookies.
+
+3. **`consent_update` dataLayer event** — fires **only at the moment of a consent change** (user clicks Accept / Reject / Save). Set `window.cmpConfig.analytics.trackConsent = true` and CMP Lite pushes:
+   ```js
+   { event: 'consent_update', consent_analytics: true, consent_marketing: false, consent_action: 'accept_all' }
+   ```
+   In GTM use a **Custom Event** trigger on `consent_update` and **Data Layer Variables** for `consent_analytics` / `consent_marketing` / `consent_action`. Use this for tags that should fire **once per consent action** (CRM ping, analytics event for opt-in rate, …) — not for tags that should fire on every consenting page view (the event isn't re-emitted on subsequent pages).
 
 ## Configuration
 
