@@ -117,17 +117,18 @@ CMP Lite stores the user's choice in a cookie and emits events. Pick whichever a
 
 Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is the Unix-ms timestamp of the decision; `v` is `bannerVersion` (used to invalidate consent when you change categories — bump it and old cookies are ignored).
 
-**Reading it in GTM** — use a **1st-Party Cookie** variable (Cookie Name: `cmp_consent`) and wrap it in a Custom JS variable to parse:
+**Reading it in GTM** — two variables, no JavaScript:
 
-```js
-function() {
-  var raw = {{cmp_consent cookie}};
-  if (!raw) return null;
-  try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { return null; }
-}
-```
+1. **1st-Party Cookie** variable (e.g. `cookie - cmp_consent`), Cookie Name: `cmp_consent`. Returns the raw URL-encoded JSON.
 
-The returned object has the shape above — use `.analytics` / `.marketing` in trigger conditions or tag fields.
+2. **RegEx Table** variable per category, to extract a clean `true` / `false`:
+   - Input Variable: `{{cookie - cmp_consent}}`
+   - Set Default Value: `false`
+   - Enable **Capture Groups** in Format Value
+   - One row — Pattern: `%22analytics%22%3A(true|false)` → Output: `$1`
+   - For marketing: replace `analytics` with `marketing` in the pattern
+
+Use the resulting variable (`cmp - analytics` / `cmp - marketing`) in trigger conditions or tag fields, e.g. *fire if `{{cmp - marketing}}` equals `true`*.
 
 ## Configuration
 
