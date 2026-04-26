@@ -117,31 +117,17 @@ CMP Lite stores the user's choice in a cookie and emits events. Pick whichever a
 
 Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is the Unix-ms timestamp of the decision; `v` is `bannerVersion` (used to invalidate consent when you change categories — bump it and old cookies are ignored).
 
-**Three ways to access it in GTM** — pick by what your tag needs:
+**Reading it in GTM** — use a **1st-Party Cookie** variable (Cookie Name: `cmp_consent`) and wrap it in a Custom JS variable to parse:
 
-1. **1st-Party Cookie variable (default choice for tag conditions).** Built-in GTM variable type, set Cookie Name to `cmp_consent`. Returns the raw URL-encoded JSON string, so wrap it in a Custom JS variable to parse:
-   ```js
-   function() {
-     var raw = {{cmp_consent cookie}};
-     if (!raw) return null;
-     try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { return null; }
-   }
-   ```
-   The cookie is present on **every** page view after the user decides, so this works for "fire tag X if user consented to marketing" on any page — including return visits where no consent action just happened.
+```js
+function() {
+  var raw = {{cmp_consent cookie}};
+  if (!raw) return null;
+  try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { return null; }
+}
+```
 
-2. **Custom JavaScript variable** calling the public API:
-   ```js
-   function() {
-     return (window.CMP && window.CMP.getConsent()) || null;
-   }
-   ```
-   Equivalent to option 1 but reads from in-memory state set up by the CMP. Slightly more robust if the cookie was tampered with — CMP Lite validates and ignores invalid cookies.
-
-3. **`consent_update` dataLayer event** — fires **only at the moment of a consent change** (user clicks Accept / Reject / Save). Set `window.cmpConfig.analytics.trackConsent = true` and CMP Lite pushes:
-   ```js
-   { event: 'consent_update', consent_analytics: true, consent_marketing: false, consent_action: 'accept_all' }
-   ```
-   In GTM use a **Custom Event** trigger on `consent_update` and **Data Layer Variables** for `consent_analytics` / `consent_marketing` / `consent_action`. Use this for tags that should fire **once per consent action** (CRM ping, analytics event for opt-in rate, …) — not for tags that should fire on every consenting page view (the event isn't re-emitted on subsequent pages).
+The returned object has the shape above — use `.analytics` / `.marketing` in trigger conditions or tag fields.
 
 ## Configuration
 
