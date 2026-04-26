@@ -23,7 +23,7 @@ window.cmpConfig = {
   privacyPolicyUrl: '/privacy-policy'
 };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.4.0/dist/cmp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.5.0/dist/cmp.min.js"></script>
 ```
 
 That's it. Default config works out of the box (black/white, banner at the bottom).
@@ -91,11 +91,12 @@ window.cmpConfig = {
     overlayBlur: false,               // modal mode only
   },
 
-  // Buttons — `text` overrides the translation; empty/missing falls back to translation
+  // Buttons — render order in the banner is: acceptAll, settings, rejectAll.
+  // `text` overrides the translation; empty/missing falls back to translation.
   buttons: {
     acceptAll: { show: true, style: 'primary',   text: '' },
-    rejectAll: { show: true, style: 'secondary', text: '' },
-    settings:  { show: true, style: 'link',      text: '' },
+    settings:  { show: true, style: 'secondary', text: '' },
+    rejectAll: { show: true, style: 'link',      text: '' },
   },
 
   // Styling

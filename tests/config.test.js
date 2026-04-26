@@ -33,7 +33,7 @@ describe('resolveConfig', () => {
     };
     const config = resolveConfig();
     expect(config.buttons.rejectAll.show).toBe(false);
-    expect(config.buttons.rejectAll.style).toBe('secondary');
+    expect(config.buttons.rejectAll.style).toBe('link');
     expect(config.buttons.acceptAll.show).toBe(true);
   });
 

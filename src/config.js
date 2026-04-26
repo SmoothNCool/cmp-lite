@@ -26,8 +26,8 @@ export const DEFAULT_CONFIG = {
   },
   buttons: {
     acceptAll: { show: true, style: 'primary' },
-    rejectAll: { show: true, style: 'secondary' },
-    settings: { show: true, style: 'link' },
+    settings: { show: true, style: 'secondary' },
+    rejectAll: { show: true, style: 'link' },
   },
   style: {
     primaryColor: '#000000',

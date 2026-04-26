@@ -78,15 +78,15 @@ function buildBannerContent(config, t, callbacks) {
     );
   }
 
-  if (buttons.rejectAll.show) {
-    actions.appendChild(
-      makeButton(buttons.rejectAll.text || t.buttons.rejectAll, btnClass(buttons.rejectAll.style) + ' cmp-btn-reject', callbacks.onRejectAll),
-    );
-  }
-
   if (buttons.settings.show) {
     actions.appendChild(
       makeButton(buttons.settings.text || t.buttons.settings, btnClass(buttons.settings.style) + ' cmp-btn-settings', callbacks.onOpenSettings),
+    );
+  }
+
+  if (buttons.rejectAll.show) {
+    actions.appendChild(
+      makeButton(buttons.rejectAll.text || t.buttons.rejectAll, btnClass(buttons.rejectAll.style) + ' cmp-btn-reject', callbacks.onRejectAll),
     );
   }
 
