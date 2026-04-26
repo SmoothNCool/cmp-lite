@@ -100,6 +100,50 @@ CMP Lite emits `consent_update` to `dataLayer` automatically when you enable `wi
 
 GTM Admin → Container Settings → **Consent Configuration** lists every tag template with its built-in consent signals. If a tag shows signals there, treat it as "WITH native V2" above.
 
+### Reading the consent state in GTM
+
+CMP Lite stores the user's choice in a cookie and emits events. Pick whichever access pattern matches your need:
+
+**Cookie:** name `cmp_consent` (configurable via `cookieName`), URL-encoded JSON. Decoded shape:
+
+```json
+{
+  "analytics": true,
+  "marketing": false,
+  "ts": 1735689600000,
+  "v": "1.0"
+}
+```
+
+Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is the Unix-ms timestamp of the decision; `v` is `bannerVersion` (used to invalidate consent when you change categories — bump it and old cookies are ignored).
+
+**Three ways to access it in GTM:**
+
+1. **`consent_update` dataLayer event (recommended).** Set `window.cmpConfig.analytics.trackConsent = true` — CMP Lite then pushes:
+   ```js
+   { event: 'consent_update', consent_analytics: true, consent_marketing: false, consent_action: 'accept_all' }
+   ```
+   In GTM make a **Data Layer Variable** for `consent_analytics` / `consent_marketing` and a **Custom Event** trigger on `consent_update`. `consent_action` is one of `accept_all` / `reject_all` / `custom`.
+
+2. **Custom JavaScript variable** — read the parsed state directly via the public API:
+   ```js
+   function() {
+     return (window.CMP && window.CMP.getConsent()) || null;
+   }
+   ```
+   Returns `{ analytics, marketing, ts, v }` or `null` before the user decides. Useful in tag conditions.
+
+3. **1st-Party Cookie variable** — built-in GTM variable type, set Cookie Name to `cmp_consent`. Returns the raw URL-encoded JSON string, so wrap it in a Custom JS variable to parse:
+   ```js
+   function() {
+     var raw = {{cmp_consent cookie}};
+     if (!raw) return null;
+     try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { return null; }
+   }
+   ```
+
+For most use cases option 1 (dataLayer event) is the cleanest — it fires reactively on every consent change and the values are pre-parsed.
+
 ## Configuration
 
 Override only what differs from defaults. The full shape:
