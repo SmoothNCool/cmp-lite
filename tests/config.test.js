@@ -17,11 +17,11 @@ describe('resolveConfig', () => {
 
   it('deep merges user config over defaults', () => {
     window.cmpConfig = {
-      display: { mode: 'wall' },
+      display: { mode: 'modal' },
       consentExpiry: 180,
     };
     const config = resolveConfig();
-    expect(config.display.mode).toBe('wall');
+    expect(config.display.mode).toBe('modal');
     expect(config.display.position).toBe('bottom');
     expect(config.consentExpiry).toBe(180);
     expect(config.defaults.ad_storage).toBe('denied');

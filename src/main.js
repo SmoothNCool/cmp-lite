@@ -1,4 +1,4 @@
-import { resolveConfig } from './config.js';
+import { resolveConfig, deepMerge } from './config.js';
 import { createConsentManager } from './consent.js';
 import { detectLanguage, getTranslations } from './i18n.js';
 import { createUI } from './ui.js';
@@ -16,7 +16,7 @@ function emitMain(event, data) {
 // Resolve config
 const config = resolveConfig();
 const lang = detectLanguage(config.lang);
-const t = getTranslations(lang);
+const t = config.texts ? deepMerge(getTranslations(lang), config.texts) : getTranslations(lang);
 
 // Create consent manager
 const consent = createConsentManager(config);

@@ -43,7 +43,7 @@ function makeButton(text, classes, onClick) {
   return btn;
 }
 
-/** Build the banner/wall content fragment (title, desc, privacy link, buttons). */
+/** Build banner content fragment (title, desc, privacy link, buttons). */
 function buildBannerContent(config, t, callbacks) {
   const frag = document.createDocumentFragment();
 

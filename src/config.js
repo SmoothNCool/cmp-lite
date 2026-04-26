@@ -42,6 +42,7 @@ export const DEFAULT_CONFIG = {
   },
   lang: 'auto',
   privacyPolicyUrl: null,
+  texts: null,
   bannerVersion: '1.0',
   cookieName: 'cmp_consent',
   cookieDomain: 'auto',
@@ -52,7 +53,7 @@ export const DEFAULT_CONFIG = {
   backend: null,
 };
 
-function deepMerge(target, source) {
+export function deepMerge(target, source) {
   const result = { ...target };
   for (const key of Object.keys(source)) {
     if (
