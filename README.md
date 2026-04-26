@@ -113,23 +113,34 @@ window.cmpConfig = {
 
   // Text overrides — deep-merged on top of the active translation.
   // Override any key from src/translations/{cs,en}.json. Skip what you don't change.
+  // Below is the full set of overridable keys, with the EN defaults shown as values.
   texts: {
     banner: {
-      title: 'Custom title',
-      description: 'Custom description shown above the buttons.',
+      title: 'Cookie Settings',
+      description: 'This website uses cookies for proper functionality, traffic analysis, and marketing purposes. Choose which cookies you want to allow.',
     },
     modal: {
-      title: 'Custom modal title',
-      alwaysActive: 'Always on',
+      title: 'Cookie Settings',
+      alwaysActive: 'Always Active',
     },
     buttons: {
-      saveSettings: 'Save my choices',
+      // acceptAll/rejectAll/settings text is set on the buttons.* config above (per-button styling).
+      saveSettings: 'Save Settings',
     },
-    privacyPolicy: 'Read our privacy policy',
+    privacyPolicy: 'Privacy Policy',         // text shown on the privacyPolicyUrl link
     categories: {
-      necessary:  { title: 'Strictly necessary', description: '…' },
-      analytics:  { title: 'Analytics',          description: '…' },
-      marketing:  { title: 'Marketing',          description: '…' },
+      necessary: {
+        title: 'Necessary',
+        description: 'These cookies are required for the website to function properly. They cannot be disabled.',
+      },
+      analytics: {
+        title: 'Analytics',
+        description: 'Help us understand how you use the website so we can improve it.',
+      },
+      marketing: {
+        title: 'Marketing',
+        description: 'Used to display relevant ads and measure their effectiveness.',
+      },
     },
   },
 
