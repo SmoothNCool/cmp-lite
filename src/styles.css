@@ -349,3 +349,39 @@
     width: 100%;
   }
 }
+
+/* Floating re-open button */
+.cmp-reopen {
+  position: fixed;
+  z-index: var(--cmp-z);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--cmp-primary);
+  color: var(--cmp-primary-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cmp-reopen:hover {
+  filter: brightness(1.08);
+}
+
+.cmp-reopen svg,
+.cmp-reopen img {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.cmp-reopen--bottom-left { bottom: 20px; left: 20px; }
+.cmp-reopen--bottom-right { bottom: 20px; right: 20px; }
+.cmp-reopen--top-left { top: 20px; left: 20px; }
+.cmp-reopen--top-right { top: 20px; right: 20px; }

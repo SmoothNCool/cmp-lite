@@ -13,6 +13,9 @@ describe('resolveConfig', () => {
     expect(config.defaults.functionality_storage).toBe('granted');
     expect(config.display.mode).toBe('banner');
     expect(config.consentExpiry).toBe(365);
+    expect(config.idCookieName).toBe('cmp_id');
+    expect(config.reopenButton.show).toBe(false);
+    expect(config.reopenButton.position).toBe('bottom-left');
   });
 
   it('deep merges user config over defaults', () => {

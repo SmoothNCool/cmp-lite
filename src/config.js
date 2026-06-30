@@ -51,6 +51,12 @@ export const DEFAULT_CONFIG = {
   analytics: {
     trackConsent: false,
   },
+  reopenButton: {
+    show: false,            // floating button to re-open consent settings
+    position: 'bottom-left',// 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
+    icon: null,             // null = built-in cookie icon; else inline <svg>, image URL, or emoji/text
+    ariaLabel: null,        // null = falls back to the settings-modal title
+  },
   backend: null,
 };
 

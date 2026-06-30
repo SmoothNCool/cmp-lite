@@ -247,6 +247,14 @@ window.cmpConfig = {
   cookieDomain: 'auto',          // 'auto' = current domain, or set explicit ('.example.com' for subdomains)
   consentExpiry: 365,            // days; user must re-consent after this period (also the cmp_id lifetime)
   analytics: { trackConsent: false }, // emit cmp_banner_shown + consent_update dataLayer events (with consent_id)
+
+  // Floating button that re-opens the consent settings (off by default)
+  reopenButton: {
+    show: false,             // turn the floating button on
+    position: 'bottom-left', // 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'
+    icon: null,              // null = built-in cookie icon; or inline '<svg…>', an image URL, or an emoji
+    ariaLabel: null,         // null = falls back to the settings-modal title
+  },
 };
 ```
 

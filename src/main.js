@@ -1,7 +1,7 @@
 import { resolveConfig, deepMerge } from './config.js';
 import { createConsentManager } from './consent.js';
 import { detectLanguage, getTranslations } from './i18n.js';
-import { createUI } from './ui.js';
+import { createUI, createReopenButton } from './ui.js';
 import { bindDataAttributes } from './events.js';
 import { trackConsentEvent, trackBannerShown } from './analytics.js';
 
@@ -24,75 +24,71 @@ consent.init();
 
 // UI state
 let ui = null;
+let reopenBtn = null;
+
+function setReopenVisible(visible) {
+  if (reopenBtn) reopenBtn.style.display = visible ? '' : 'none';
+}
+
+function mountReopenButton() {
+  if (!config.reopenButton.show || reopenBtn) return;
+  reopenBtn = createReopenButton(config, t, openSettings);
+  document.body.appendChild(reopenBtn);
+}
+
+// Close any open UI and bring the reopen button back.
+function closeUI() {
+  if (ui) { ui.destroy(); ui = null; }
+  setReopenVisible(true);
+}
+
+// Shared callbacks for banner + settings modal.
+const uiCallbacks = {
+  onAcceptAll() {
+    consent.acceptAll();
+    trackConsentEvent(config, consent.getConsent(), 'accept_all');
+    closeUI();
+  },
+  onRejectAll() {
+    consent.rejectAll();
+    trackConsentEvent(config, consent.getConsent(), 'reject_all');
+    closeUI();
+  },
+  onSaveSettings(categories) {
+    consent.updateConsent(categories);
+    trackConsentEvent(config, consent.getConsent(), 'custom');
+    closeUI();
+  },
+  onOpenSettings() {
+    if (ui) ui.showModal();
+  },
+  getCategories() {
+    return config.categories;
+  },
+  getCurrentConsent() {
+    return consent.getConsent();
+  },
+};
 
 function showBanner() {
   if (ui) ui.destroy();
-  ui = createUI(config, t, {
-    onAcceptAll() {
-      consent.acceptAll();
-      trackConsentEvent(config, consent.getConsent(), 'accept_all');
-      if (ui) { ui.destroy(); ui = null; }
-    },
-    onRejectAll() {
-      consent.rejectAll();
-      trackConsentEvent(config, consent.getConsent(), 'reject_all');
-      if (ui) { ui.destroy(); ui = null; }
-    },
-    onSaveSettings(categories) {
-      consent.updateConsent(categories);
-      trackConsentEvent(config, consent.getConsent(), 'custom');
-      if (ui) { ui.destroy(); ui = null; }
-    },
-    onOpenSettings() {
-      if (ui) ui.showModal();
-    },
-    getCategories() {
-      return config.categories;
-    },
-    getCurrentConsent() {
-      return consent.getConsent();
-    },
-  });
+  ui = createUI(config, t, uiCallbacks);
   ui.showBanner();
   trackBannerShown(config, consent.getId());
-}
-
-// Show banner if needed
-if (consent.needsBanner()) {
-  showBanner();
+  setReopenVisible(false);
 }
 
 // Open settings modal (reuses existing UI or creates fresh one)
 function openSettings() {
-  if (!ui) {
-    ui = createUI(config, t, {
-      onAcceptAll() {
-        consent.acceptAll();
-        trackConsentEvent(config, consent.getConsent(), 'accept_all');
-        if (ui) { ui.destroy(); ui = null; }
-      },
-      onRejectAll() {
-        consent.rejectAll();
-        trackConsentEvent(config, consent.getConsent(), 'reject_all');
-        if (ui) { ui.destroy(); ui = null; }
-      },
-      onSaveSettings(categories) {
-        consent.updateConsent(categories);
-        trackConsentEvent(config, consent.getConsent(), 'custom');
-        if (ui) { ui.destroy(); ui = null; }
-      },
-      onOpenSettings() {
-        if (ui) ui.showModal();
-      },
-      getCategories() {
-        return config.categories;
-      },
-      getCurrentConsent() {
-        return consent.getConsent();
-      },
-    });
-  }
+  if (!ui) ui = createUI(config, t, uiCallbacks);
   ui.showModal();
+  setReopenVisible(false);
+}
+
+// Mount the persistent reopen button (if enabled), then show banner if needed.
+mountReopenButton();
+if (consent.needsBanner()) {
+  showBanner();
 }
 
 // Bind data attributes
@@ -102,20 +98,20 @@ bindDataAttributes({
   },
   acceptAll() {
     consent.acceptAll();
-    if (ui) { ui.destroy(); ui = null; }
+    closeUI();
   },
   rejectAll() {
     consent.rejectAll();
-    if (ui) { ui.destroy(); ui = null; }
+    closeUI();
   },
 });
 
 // Expose public API
 window.CMP = {
   open() { openSettings(); emitMain('open'); },
-  close() { if (ui) { ui.destroy(); ui = null; } emitMain('close'); },
-  acceptAll() { consent.acceptAll(); if (ui) { ui.destroy(); ui = null; } },
-  rejectAll() { consent.rejectAll(); if (ui) { ui.destroy(); ui = null; } },
+  close() { closeUI(); emitMain('close'); },
+  acceptAll() { consent.acceptAll(); closeUI(); },
+  rejectAll() { consent.rejectAll(); closeUI(); },
   getConsent() { return consent.getConsent(); },
   getId() { return consent.getId(); },
   hasConsent() { return consent.hasConsent(); },

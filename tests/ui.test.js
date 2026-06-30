@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createUI } from '../src/ui.js';
+import { createUI, createReopenButton } from '../src/ui.js';
 import { getTranslations } from '../src/i18n.js';
 import { DEFAULT_CONFIG } from '../src/config.js';
 
@@ -144,5 +144,49 @@ describe('createUI', () => {
     const ui = createUI(config, getTranslations('cs'), makeCallbacks());
     ui.showBanner();
     expect(document.querySelector('.cmp-banner--top')).not.toBeNull();
+  });
+});
+
+describe('createReopenButton', () => {
+  beforeEach(() => {
+    document.body.textContent = '';
+    document.querySelectorAll('style[data-cmp]').forEach(el => el.remove());
+  });
+
+  function cfg(reopen = {}) {
+    return { ...DEFAULT_CONFIG, reopenButton: { ...DEFAULT_CONFIG.reopenButton, ...reopen } };
+  }
+
+  it('renders a button with the built-in cookie icon and position class', () => {
+    const btn = createReopenButton(cfg({ position: 'bottom-right' }), getTranslations('cs'), vi.fn());
+    expect(btn.tagName).toBe('BUTTON');
+    expect(btn.classList.contains('cmp-reopen--bottom-right')).toBe(true);
+    expect(btn.querySelector('svg')).not.toBeNull();
+  });
+
+  it('fires the callback on click', () => {
+    const onClick = vi.fn();
+    const btn = createReopenButton(cfg(), getTranslations('cs'), onClick);
+    btn.click();
+    expect(onClick).toHaveBeenCalled();
+  });
+
+  it('falls back to the settings-modal title for aria-label', () => {
+    const t = getTranslations('cs');
+    const btn = createReopenButton(cfg(), t, vi.fn());
+    expect(btn.getAttribute('aria-label')).toBe(t.modal.title);
+  });
+
+  it('uses an emoji icon as text without an svg', () => {
+    const btn = createReopenButton(cfg({ icon: '🍪' }), getTranslations('cs'), vi.fn());
+    expect(btn.querySelector('svg')).toBeNull();
+    expect(btn.textContent).toBe('🍪');
+  });
+
+  it('renders an image when icon is a URL', () => {
+    const btn = createReopenButton(cfg({ icon: 'https://x.test/cookie.svg' }), getTranslations('cs'), vi.fn());
+    const img = btn.querySelector('img');
+    expect(img).not.toBeNull();
+    expect(img.getAttribute('src')).toBe('https://x.test/cookie.svg');
   });
 });
