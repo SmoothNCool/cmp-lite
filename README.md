@@ -23,7 +23,7 @@ window.cmpConfig = {
   privacyPolicyUrl: '/privacy-policy'
 };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.5.1/dist/cmp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.6.0/dist/cmp.min.js"></script>
 ```
 
 That's it. Default config works out of the box (black/white, banner at the bottom).
@@ -130,6 +130,27 @@ Keys come from `config.categories` (default `analytics` + `marketing`). `ts` is 
 
 Use the resulting variable (`cmp - analytics` / `cmp - marketing`) in trigger conditions or tag fields, e.g. *fire if `{{cmp - marketing}}` equals `true`*.
 
+## Measuring consent rate
+
+To measure **what share of visitors consent** (not just how many clicked), set `analytics.trackConsent = true`. CMP Lite then emits two `dataLayer` events, both carrying a stable `consent_id`:
+
+| Event | Fires when | Fields |
+|---|---|---|
+| `cmp_banner_shown` | the banner/modal is displayed | `consent_id` — **denominator** (people who saw the bar) |
+| `consent_update` | the user accepts / rejects / saves settings | `consent_id`, `consent_analytics`, `consent_marketing`, `consent_action` (`accept_all` \| `reject_all` \| `custom`) — **numerator** |
+
+**How the ratio works.** The `consent_id` is a pseudonymous UUID stored in the `cmp_id` cookie (separate from `cmp_consent`), generated on the visitor's first load and reused afterwards. Because both events share it, one person is one identity across the *shown → decided* funnel — even if they change their mind and `consent_update` fires again.
+
+In GA4 (events forwarded via GTM), GA4 also dedupes by user, so:
+
+```
+consent rate ≈ Users(consent_update, consent_analytics = true) ÷ Users(cmp_banner_shown)
+```
+
+Build it in a GA4 **Exploration** (Free-form), or for an exact per-person figure use `consent_id` server-side (see the consent-log backend on the roadmap).
+
+The `consent_id` is pseudonymous (random UUID, no personal data) and used only for the CMP's own statistics/consent record. The `cmp_id` cookie is strictly functional to the consent tool; document it in your privacy policy alongside `cmp_consent`.
+
 ## Configuration
 
 Override only what differs from defaults. The full shape:
@@ -222,9 +243,10 @@ window.cmpConfig = {
   lang: 'auto',                  // 'auto' | 'cs' | 'en'
   privacyPolicyUrl: null,        // omit the link entirely if null
   cookieName: 'cmp_consent',
+  idCookieName: 'cmp_id',        // pseudonymous visitor id (UUID), set on first load — see "Measuring consent rate"
   cookieDomain: 'auto',          // 'auto' = current domain, or set explicit ('.example.com' for subdomains)
-  consentExpiry: 365,            // days; user must re-consent after this period
-  analytics: { trackConsent: false }, // emit a custom dataLayer event on every consent decision
+  consentExpiry: 365,            // days; user must re-consent after this period (also the cmp_id lifetime)
+  analytics: { trackConsent: false }, // emit cmp_banner_shown + consent_update dataLayer events (with consent_id)
 };
 ```
 
@@ -236,7 +258,8 @@ window.cmpConfig = {
 | `CMP.close()` | Close banner/modal |
 | `CMP.acceptAll()` | Accept all categories |
 | `CMP.rejectAll()` | Reject non-essential |
-| `CMP.getConsent()` | Get current consent state |
+| `CMP.getConsent()` | Get current consent state (includes `id`, the visitor's `consent_id`) |
+| `CMP.getId()` | Get the pseudonymous `consent_id` (UUID from the `cmp_id` cookie) |
 | `CMP.hasConsent()` | Check if user already responded |
 | `CMP.reset()` | Clear consent, show banner again |
 | `CMP.on(event, cb)` | Listen to events: `open`, `close`, `consent_update` |
