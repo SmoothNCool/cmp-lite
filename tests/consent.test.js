@@ -17,6 +17,7 @@ function makeConfig(overrides = {}) {
       marketing: { signals: ['ad_storage', 'ad_user_data', 'ad_personalization', 'personalization_storage'], default: 'denied' },
     },
     cookieName: 'cmp_consent',
+    idCookieName: 'cmp_id',
     cookieDomain: 'auto',
     consentExpiry: 365,
     bannerVersion: '1.0',
@@ -28,7 +29,30 @@ function makeConfig(overrides = {}) {
 describe('createConsentManager', () => {
   beforeEach(() => {
     document.cookie = 'cmp_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+    document.cookie = 'cmp_id=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     window.dataLayer = [];
+  });
+
+  it('generates a consent_id on init and persists it in a cookie', () => {
+    const cm = createConsentManager(makeConfig());
+    cm.init();
+    const id = cm.getId();
+    expect(id).toBeTruthy();
+    expect(document.cookie).toContain('cmp_id');
+  });
+
+  it('reuses the existing consent_id instead of generating a new one', () => {
+    document.cookie = 'cmp_id=fixed-id-123; path=/';
+    const cm = createConsentManager(makeConfig());
+    cm.init();
+    expect(cm.getId()).toBe('fixed-id-123');
+  });
+
+  it('includes the consent_id in getConsent() after an action', () => {
+    const cm = createConsentManager(makeConfig());
+    cm.init();
+    cm.acceptAll();
+    expect(cm.getConsent().id).toBe(cm.getId());
   });
 
   it('sends default consent on init when no cookie exists', () => {

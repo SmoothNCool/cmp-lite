@@ -1,6 +1,6 @@
 {
   "name": "cmp-lite",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Lightweight CMP with Google Consent Mode V2 support",
   "private": true,
   "scripts": {

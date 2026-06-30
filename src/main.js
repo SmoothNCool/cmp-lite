@@ -3,7 +3,7 @@ import { createConsentManager } from './consent.js';
 import { detectLanguage, getTranslations } from './i18n.js';
 import { createUI } from './ui.js';
 import { bindDataAttributes } from './events.js';
-import { trackConsentEvent } from './analytics.js';
+import { trackConsentEvent, trackBannerShown } from './analytics.js';
 
 // Simple event emitter for open/close events
 const mainListeners = {};
@@ -54,6 +54,7 @@ function showBanner() {
     },
   });
   ui.showBanner();
+  trackBannerShown(config, consent.getId());
 }
 
 // Show banner if needed
@@ -116,6 +117,7 @@ window.CMP = {
   acceptAll() { consent.acceptAll(); if (ui) { ui.destroy(); ui = null; } },
   rejectAll() { consent.rejectAll(); if (ui) { ui.destroy(); ui = null; } },
   getConsent() { return consent.getConsent(); },
+  getId() { return consent.getId(); },
   hasConsent() { return consent.hasConsent(); },
   reset() { consent.reset(); showBanner(); },
   on(event, cb) {

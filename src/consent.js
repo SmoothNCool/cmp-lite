@@ -28,10 +28,32 @@ function deleteCookie(name) {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
 }
 
+function generateId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // ponytail: fallback for non-secure contexts (http) where crypto.randomUUID is missing; unique enough, not RFC-strict
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export function createConsentManager(config) {
   let consentState = null;
   let _needsBanner = true;
+  let consentId = null;
   const listeners = {};
+
+  function getOrCreateId() {
+    let id = getCookie(config.idCookieName);
+    if (!id) {
+      id = generateId();
+      setCookie(config.idCookieName, id, config.consentExpiry, config.cookieDomain);
+    }
+    return id;
+  }
 
   function buildConsentSignals(categories) {
     const signals = {};
@@ -67,6 +89,7 @@ export function createConsentManager(config) {
 
   return {
     init() {
+      consentId = getOrCreateId();
       gtag('consent', 'default', {
         ...config.defaults,
         wait_for_update: 500,
@@ -90,13 +113,15 @@ export function createConsentManager(config) {
       }
     },
 
+    getId() { return consentId; },
+
     needsBanner() { return _needsBanner; },
 
     hasConsent() { return consentState !== null && !_needsBanner; },
 
     getConsent() {
       if (!consentState) return null;
-      const result = { ts: consentState.ts, v: consentState.v };
+      const result = { id: consentId, ts: consentState.ts, v: consentState.v };
       for (const catKey of Object.keys(config.categories)) {
         result[catKey] = consentState[catKey] ?? false;
       }

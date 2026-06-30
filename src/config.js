@@ -45,6 +45,7 @@ export const DEFAULT_CONFIG = {
   texts: null,
   bannerVersion: '1.0',
   cookieName: 'cmp_consent',
+  idCookieName: 'cmp_id',
   cookieDomain: 'auto',
   consentExpiry: 365,
   analytics: {
