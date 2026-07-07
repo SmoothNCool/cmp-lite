@@ -161,7 +161,12 @@
   color: var(--cmp-primary-text);
 }
 
+/* :hover re-asserts own colors with !important so host-page button:hover / .btn:hover
+   can't repaint the widget's buttons. ponytail: !important instead of Shadow DOM —
+   upgrade to Shadow DOM if host CSS keeps leaking into other CMP elements. */
 .cmp-btn--primary:hover {
+  background: var(--cmp-primary) !important;
+  color: var(--cmp-primary-text) !important;
   opacity: 0.9;
 }
 
@@ -172,7 +177,9 @@
 }
 
 .cmp-btn--secondary:hover {
-  background: var(--cmp-secondary);
+  background: var(--cmp-secondary) !important;
+  color: var(--cmp-secondary-text) !important;
+  border-color: var(--cmp-secondary) !important;
 }
 
 .cmp-btn--link {
@@ -183,6 +190,8 @@
 }
 
 .cmp-btn--link:hover {
+  background: transparent !important;
+  color: var(--cmp-primary) !important;
   text-decoration: underline;
 }
 
@@ -371,6 +380,8 @@
 }
 
 .cmp-reopen:hover {
+  background: var(--cmp-primary) !important;
+  color: var(--cmp-primary-text) !important;
   filter: brightness(1.08);
 }
 
