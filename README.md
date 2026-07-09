@@ -293,6 +293,21 @@ Built-in: Czech (`cs`), English (`en`). Auto-detected from `<html lang>` or `nav
 
 To add a new language, fork and add `src/translations/<lang>.json`, then submit a PR.
 
+## Release
+
+Clients load a **floating minor tag** (`@0.7`) so a fix rolls out to every site without touching a single GTM container. To ship an update:
+
+1. `npm test` — keep it green (a floating tag auto-deploys to **all** clients at once; a bad build breaks everyone).
+2. Bump `version` in `package.json`, then `npm run build`.
+3. `git commit`, `git tag v0.7.x`, `git push origin main --tags`.
+4. **Purge the jsDelivr cache** so `@0.7` picks up the new tag immediately (otherwise ~12 h lag):
+
+   ```bash
+   curl "https://purge.jsdelivr.net/gh/SmoothNCool/cmp-lite@0.7/dist/cmp.min.js"
+   ```
+
+Patches and minor improvements stay within `0.7.x` and flow automatically. A `0.8.0` bump is a deliberate gate — `@0.7` clients won't get it until they change their snippet, so reserve it for breaking changes. Pin an exact version (`@v0.7.1`) for any client that must not auto-update.
+
 ## License
 
 MIT
