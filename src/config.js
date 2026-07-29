@@ -57,7 +57,9 @@ export const DEFAULT_CONFIG = {
     icon: null,             // null = built-in cookie icon; else inline <svg>, image URL, or emoji/text
     ariaLabel: null,        // null = falls back to the settings-modal title
   },
-  backend: null,
+  consentLog: {
+    endpoint: null,       // POST consent events here (fire-and-forget beacon); null = off
+  },
 };
 
 export function deepMerge(target, source) {

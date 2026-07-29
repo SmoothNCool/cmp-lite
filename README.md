@@ -255,8 +255,42 @@ window.cmpConfig = {
     icon: null,              // null = built-in cookie icon; or inline '<svg…>', an image URL, or an emoji
     ariaLabel: null,         // null = falls back to the settings-modal title
   },
+
+  // Optional: POST consent events to your own endpoint (off by default)
+  consentLog: { endpoint: null },
 };
 ```
+
+## Logging consent events to your own endpoint
+
+Set `consentLog.endpoint` and the banner posts each consent event to it with
+`navigator.sendBeacon` — useful for your own consent-rate stats or a proof-of-consent log:
+
+```js
+window.cmpConfig = {
+  consentLog: { endpoint: 'https://your-endpoint.example.com/api/consent' }
+};
+```
+
+Body (JSON, sent as `text/plain` so it stays a CORS simple request — no preflight):
+
+```json
+{
+  "event": "banner_shown",       // or "consent_update"
+  "consent_id": "…uuid…",        // the cmp_id cookie — dedupe on this
+  "action": null,                 // "accept_all" | "reject_all" | "custom" on consent_update
+  "analytics": null,              // category states on consent_update, null on banner_shown
+  "marketing": null,
+  "v": "1.0",                     // bannerVersion
+  "ts": 1735689600000,
+  "url": "https://example.com/page"
+}
+```
+
+`banner_shown` fires only for the initial banner, not when a returning visitor re-opens the
+settings — so `consent_update` ÷ `banner_shown` (deduped on `consent_id`) is a clean consent rate.
+Delivery is fire-and-forget: it never blocks the banner and a failed send is silently dropped.
+Your endpoint should verify the `Origin` header and answer `204`.
 
 ## JS API
 
