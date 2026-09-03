@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { readFileSync } from 'fs';
 import { createUI, createReopenButton } from '../src/ui.js';
 import { getTranslations } from '../src/i18n.js';
 import { DEFAULT_CONFIG } from '../src/config.js';
@@ -188,5 +189,36 @@ describe('createReopenButton', () => {
     const img = btn.querySelector('img');
     expect(img).not.toBeNull();
     expect(img.getAttribute('src')).toBe('https://x.test/cookie.svg');
+  });
+});
+
+describe('styles.css', () => {
+  it('uses no rem font sizes (host pages can shrink the html font size)', () => {
+    const css = readFileSync('src/styles.css', 'utf8');
+    expect(css).not.toMatch(/\d+rem/);
+  });
+});
+
+describe('style variables', () => {
+  beforeEach(() => {
+    document.querySelectorAll('style[data-cmp]').forEach(el => el.remove());
+  });
+
+  function injectedCss(style) {
+    createUI({ ...DEFAULT_CONFIG, style: { ...DEFAULT_CONFIG.style, ...style } },
+      getTranslations('cs'), makeCallbacks()).showBanner();
+    return document.querySelector('style[data-cmp]').textContent;
+  }
+
+  it('falls back to secondaryTextColor / secondaryColor when the optional colors are unset', () => {
+    const css = injectedCss({ secondaryColor: '#aaa', secondaryTextColor: '#111' });
+    expect(css).toContain('--cmp-secondary-hover-text: #111;');
+    expect(css).toContain('--cmp-toggle-off: #aaa;');
+  });
+
+  it('uses secondaryHoverTextColor and toggleOffColor when set', () => {
+    const css = injectedCss({ secondaryHoverTextColor: '#f0ece9', toggleOffColor: '#cfc7c1' });
+    expect(css).toContain('--cmp-secondary-hover-text: #f0ece9;');
+    expect(css).toContain('--cmp-toggle-off: #cfc7c1;');
   });
 });

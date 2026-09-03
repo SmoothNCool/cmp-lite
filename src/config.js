@@ -34,6 +34,8 @@ export const DEFAULT_CONFIG = {
     primaryTextColor: '#ffffff',
     secondaryColor: '#d1d5db',
     secondaryTextColor: '#000000',
+    secondaryHoverTextColor: null,  // falls back to secondaryTextColor
+    toggleOffColor: null,           // falls back to secondaryColor
     backgroundColor: '#ffffff',
     textColor: '#000000',
     borderRadius: '8px',

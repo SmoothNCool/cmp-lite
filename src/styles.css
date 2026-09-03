@@ -78,14 +78,14 @@
 }
 
 .cmp-banner__title {
-  font-size: 1.125rem;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 8px;
   color: var(--cmp-text);
 }
 
 .cmp-banner__text {
-  font-size: 0.875rem;
+  font-size: 13px;
   margin-bottom: 16px;
   color: var(--cmp-text);
   opacity: 0.85;
@@ -121,7 +121,7 @@
 }
 
 .cmp-modal__title {
-  font-size: 1.25rem;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 20px;
   color: var(--cmp-text);
@@ -141,7 +141,7 @@
   justify-content: center;
   padding: 10px 20px;
   border-radius: var(--cmp-radius);
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   border: none;
@@ -178,7 +178,7 @@
 
 .cmp-btn--secondary:hover {
   background: var(--cmp-secondary) !important;
-  color: var(--cmp-secondary-text) !important;
+  color: var(--cmp-secondary-hover-text) !important;
   border-color: var(--cmp-secondary) !important;
 }
 
@@ -198,7 +198,7 @@
 /* ── Privacy Link ── */
 .cmp-privacy-link {
   display: inline-block;
-  font-size: 0.8125rem;
+  font-size: 12px;
   color: var(--cmp-primary);
   text-decoration: underline;
   margin-bottom: 12px;
@@ -221,19 +221,19 @@
 }
 
 .cmp-category__title {
-  font-size: 0.9375rem;
+  font-size: 14px;
   font-weight: 600;
   color: var(--cmp-text);
 }
 
 .cmp-category__desc {
-  font-size: 0.8125rem;
+  font-size: 13px;
   color: var(--cmp-text);
   opacity: 0.7;
 }
 
 .cmp-category--necessary .cmp-category__badge {
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 500;
   color: var(--cmp-primary);
   opacity: 0.8;
@@ -259,7 +259,7 @@
 .cmp-toggle__slider {
   position: absolute;
   inset: 0;
-  background: var(--cmp-secondary);
+  background: var(--cmp-toggle-off);
   border-radius: 12px;
   transition: background 0.2s;
 }

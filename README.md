@@ -199,6 +199,8 @@ window.cmpConfig = {
     primaryTextColor: '#ffffff',
     secondaryColor: '#d1d5db',
     secondaryTextColor: '#000000',
+    secondaryHoverTextColor: null,  // secondary button text on hover; null = secondaryTextColor
+    toggleOffColor: null,           // switched-off toggle track; null = secondaryColor
     backgroundColor: '#ffffff',
     textColor: '#000000',
     borderRadius: '8px',

@@ -20,6 +20,8 @@ function injectStyles(config) {
   --cmp-primary-text: ${s.primaryTextColor};
   --cmp-secondary: ${s.secondaryColor};
   --cmp-secondary-text: ${s.secondaryTextColor};
+  --cmp-secondary-hover-text: ${s.secondaryHoverTextColor || s.secondaryTextColor};
+  --cmp-toggle-off: ${s.toggleOffColor || s.secondaryColor};
   --cmp-bg: ${s.backgroundColor};
   --cmp-text: ${s.textColor};
   --cmp-radius: ${s.borderRadius};
