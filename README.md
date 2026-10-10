@@ -23,7 +23,7 @@ window.cmpConfig = {
   privacyPolicyUrl: '/privacy-policy'
 };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@v0.6.0/dist/cmp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SmoothNCool/cmp-lite@0.7/dist/cmp.min.js"></script>
 ```
 
 That's it. Default config works out of the box (black/white, banner at the bottom).
