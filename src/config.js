@@ -85,5 +85,10 @@ export function deepMerge(target, source) {
 
 export function resolveConfig() {
   const userConfig = (typeof window !== 'undefined' && window.cmpConfig) || {};
-  return deepMerge(DEFAULT_CONFIG, userConfig);
+  const config = deepMerge(DEFAULT_CONFIG, userConfig);
+  // categories: { marketing: null } removes a default category (web without ads)
+  for (const key of Object.keys(config.categories)) {
+    if (!config.categories[key]) delete config.categories[key];
+  }
+  return config;
 }

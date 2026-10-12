@@ -18,6 +18,12 @@ describe('resolveConfig', () => {
     expect(config.reopenButton.position).toBe('bottom-left');
   });
 
+  it('removes a category set to null', () => {
+    window.cmpConfig = { categories: { marketing: null } };
+    const config = resolveConfig();
+    expect(Object.keys(config.categories)).toEqual(['analytics']);
+  });
+
   it('deep merges user config over defaults', () => {
     window.cmpConfig = {
       display: { mode: 'modal' },

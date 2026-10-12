@@ -168,7 +168,8 @@ window.cmpConfig = {
     security_storage: 'granted',
   },
 
-  // UI categories mapped to consent signals (shown in settings modal)
+  // UI categories mapped to consent signals (shown in settings modal).
+  // Set a category to null to remove it, e.g. categories: { marketing: null } on a site without ads.
   categories: {
     analytics: { signals: ['analytics_storage'], default: 'denied' },
     marketing: {
